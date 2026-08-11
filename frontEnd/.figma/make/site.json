@@ -1,0 +1,10 @@
+{
+  "description": "Streamline project management with an intuitive reporting system featuring a homepage, data entry page, and comprehensive reporting tools for efficient oversight.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
