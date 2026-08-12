@@ -1,61 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
 @import 'tailwindcss';
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
-  --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 2px);
-  --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-serif: 'Instrument Serif', Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --color-bg: #f0f4f7;
+  --color-surface: #ffffff;
+  --color-nav: #0d4f6e;
+  --color-nav-hover: #1a6a8e;
+  --color-primary: #0d6e8f;
+  --color-primary-hover: #0a5c79;
+  --color-accent: #1a9bc0;
+  --color-border: #d1dce5;
+  --color-text: #1a2733;
+  --color-muted: #5a7080;
+  --color-status-green: #16a34a;
+  --color-status-yellow: #d97706;
+  --color-status-red: #dc2626;
 }
 
-:root {
-  --background: #f7f8fa;
-  --foreground: #0d1b2e;
-  --card: #ffffff;
-  --card-foreground: #0d1b2e;
-  --primary: #00205b;
-  --primary-foreground: #ffffff;
-  --secondary: #e8edf5;
-  --secondary-foreground: #0d1b2e;
-  --muted: #eef1f6;
-  --muted-foreground: #64748b;
-  --accent: #0066cc;
-  --accent-foreground: #ffffff;
-  --border: #dde3ec;
-  --ring: #0066cc;
-  --radius: 6px;
-}
-
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
 html, body {
   margin: 0;
   padding: 0;
+  background-color: #f0f4f7;
   font-family: 'Inter', system-ui, sans-serif;
-  background: var(--background);
-  color: var(--foreground);
+  color: #1a2733;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
-/* Hide scrollbar until hover */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: transparent; border-radius: 3px; }
-*:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
+::-webkit-scrollbar-thumb { background: #b0c0cc; border-radius: 3px; }
+
+.mono { font-family: 'DM Mono', monospace; }

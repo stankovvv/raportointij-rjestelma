@@ -1,5 +1,5 @@
 {
-  "description": "Streamline project management with an intuitive reporting system featuring a homepage, data entry page, and comprehensive reporting tools for efficient oversight.",
+  "description": "Generates custom frontend designs based on user prompts, enabling developers and designers to quickly create tailored web interfaces.",
   "robots": {
     "index": false
   },
