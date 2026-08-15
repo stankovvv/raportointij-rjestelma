@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Page } from '../components/Layout'
+import { saveRecord, type Department } from '../lib/api'
 
 interface Props {
   onNavigate: (page: Page) => void
@@ -26,20 +27,25 @@ export default function DataEntryPakkaamo({ onNavigate, userName }: Props) {
   const today = new Date().toISOString().split('T')[0]
   const timeNow = new Date().toTimeString().slice(0, 5)
 
+  // Lähtöarvot vastaavat pakkaamon lomakkeen vaatimuksia: päivä, aika, tuote, kappalemäärä ja paino.
   const [form, setForm] = useState({
     pvm: today, aika: timeNow, tuote: '', pakkaukset: '',
     paino: '', linja: '', operaattori: userName, huomiot: '',
   })
   const [errors, setErrors] = useState<Record<string, boolean>>({})
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [rows, setRows] = useState<Row[]>(SAMPLE_ROWS)
 
+  // Yksi funktio kaikkien lomakekenttien päivittämiseen.
   const set = (k: string, v: string) => {
     setForm(f => ({ ...f, [k]: v }))
     setErrors(e => ({ ...e, [k]: false }))
     setSaved(false)
   }
 
+  // Tarkistaa pakolliset tiedot ennen tallennusta.
   const validate = () => {
     const required = ['pvm', 'aika', 'tuote', 'pakkaukset', 'paino', 'linja', 'operaattori']
     const errs: Record<string, boolean> = {}
@@ -48,18 +54,41 @@ export default function DataEntryPakkaamo({ onNavigate, userName }: Props) {
     return Object.keys(errs).length === 0
   }
 
-  const handleSave = (e: React.FormEvent) => {
+  // Lähettää pakkaamon tiedot backendin /api/records/pakkaamo -reitille.
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
-    const newRow: Row = {
-      pvm: new Date(form.pvm).toLocaleDateString('fi-FI'),
-      aika: form.aika, tuote: form.tuote, pakkaukset: form.pakkaukset,
-      paino: form.paino, linja: form.linja,
-      operaattori: form.operaattori, huomiot: form.huomiot,
+
+    try {
+      setSaving(true)
+      setError('')
+      const payload = {
+        pvm: form.pvm,
+        aika: form.aika,
+        tuote: form.tuote,
+        pakkaukset: Number(form.pakkaukset),
+        paino: Number(form.paino),
+        linja: form.linja,
+        operaattori: form.operaattori,
+        huomiot: form.huomiot,
+      }
+      await saveRecord('pakkaamo' as Department, payload)
+
+      const newRow: Row = {
+        pvm: new Date(form.pvm).toLocaleDateString('fi-FI'),
+        aika: form.aika, tuote: form.tuote, pakkaukset: form.pakkaukset,
+        paino: form.paino, linja: form.linja,
+        operaattori: form.operaattori, huomiot: form.huomiot,
+      }
+      setRows(r => [newRow, ...r])
+      setSaved(true)
+      setForm(f => ({ ...f, tuote: '', pakkaukset: '', paino: '', linja: '', huomiot: '' }))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Tallennus epäonnistui')
+      setSaved(false)
+    } finally {
+      setSaving(false)
     }
-    setRows(r => [newRow, ...r])
-    setSaved(true)
-    setForm(f => ({ ...f, tuote: '', pakkaukset: '', paino: '', linja: '', huomiot: '' }))
   }
 
   return (
@@ -190,13 +219,20 @@ export default function DataEntryPakkaamo({ onNavigate, userName }: Props) {
             </div>
           )}
 
+          {error && (
+            <div className="mb-4 px-4 py-3 rounded-lg border text-sm" style={{ background: '#fef2f2', color: '#b91c1c', borderColor: '#fecaca' }}>
+              {error}
+            </div>
+          )}
+
           <button type="submit"
-            className="px-6 py-3.5 rounded-lg text-white font-semibold text-sm transition-colors w-full md:w-auto"
+            disabled={saving}
+            className="px-6 py-3.5 rounded-lg text-white font-semibold text-sm transition-colors w-full md:w-auto disabled:opacity-70"
             style={{ background: '#0d4f6e' }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#0a3d56')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#0d4f6e')}
+            onMouseEnter={e => (!saving) && (e.currentTarget.style.background = '#0a3d56')}
+            onMouseLeave={e => (!saving) && (e.currentTarget.style.background = '#0d4f6e')}
           >
-            Tallenna tiedot tietokantaan
+            {saving ? 'Tallennetaan...' : 'Tallenna tiedot tietokantaan'}
           </button>
         </form>
       </div>

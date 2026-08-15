@@ -117,7 +117,11 @@ export default function Dashboard({ onNavigate, userRole }: DashboardProps) {
               <YAxis tick={{ fontSize: 11, fill: '#5a7080', fontFamily: 'DM Mono' }} axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2eaf0', boxShadow: 'none' }}
-                formatter={(v: number) => [`${v.toLocaleString('fi-FI')} l/kpl`, 'Määrä']}
+                formatter={(value) => {
+                  const numeric = Array.isArray(value) ? Number(value[0]) : Number(value)
+                  const label = Number.isFinite(numeric) ? `${numeric.toLocaleString('fi-FI')} l/kpl` : '—'
+                  return [label, 'Määrä']
+                }}
               />
               <Bar dataKey="maara" fill="#0d6e8f" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -136,7 +140,11 @@ export default function Dashboard({ onNavigate, userRole }: DashboardProps) {
               <YAxis tick={{ fontSize: 11, fill: '#5a7080', fontFamily: 'DM Mono' }} axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2eaf0', boxShadow: 'none' }}
-                formatter={(v: number) => [`${v.toLocaleString('fi-FI')} l/kpl`]}
+                formatter={(value) => {
+                  const numeric = Array.isArray(value) ? Number(value[0]) : Number(value)
+                  const label = Number.isFinite(numeric) ? `${numeric.toLocaleString('fi-FI')} l/kpl` : '—'
+                  return [label]
+                }}
               />
               <Legend iconSize={10} wrapperStyle={{ fontSize: 12, color: '#5a7080' }} />
               <Line type="monotone" dataKey="keitto" stroke="#0d6e8f" strokeWidth={2} dot={false} name="Keitto" />

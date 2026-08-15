@@ -1,27 +1,30 @@
 import { useState } from 'react'
+import { login } from '../lib/api'
 
 interface LoginProps {
   onLogin: (role: 'operaattori' | 'esimies', name: string) => void
 }
 
-const USERS = [
-  { username: 'matti.virtanen', password: 'meijeri1', name: 'Matti Virtanen', role: 'operaattori' as const },
-  { username: 'liisa.makinen', password: 'meijeri2', name: 'Liisa Mäkinen', role: 'operaattori' as const },
-  { username: 'esimies', password: 'esimies123', name: 'Timo Korhonen', role: 'esimies' as const },
-]
-
 export default function Login({ onLogin }: LoginProps) {
+  // Formin kentät lokalissa tilassa.
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Lähettää kirjautumistiedot backendille ja päivittää pääsovelluksen käyttäjätilan.
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const user = USERS.find(u => u.username === username && u.password === password)
-    if (user) {
-      onLogin(user.role, user.name)
-    } else {
-      setError('Virheellinen käyttäjätunnus tai salasana.')
+    setError('')
+    setLoading(true)
+
+    try {
+      const result = await login(username.trim(), password)
+      onLogin(result.user.role, result.user.name)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Virheellinen käyttäjätunnus tai salasana.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -85,12 +88,13 @@ export default function Login({ onLogin }: LoginProps) {
 
             <button
               type="submit"
-              className="w-full py-3 rounded-lg text-white font-semibold text-sm transition-colors mt-2"
+              disabled={loading}
+              className="w-full py-3 rounded-lg text-white font-semibold text-sm transition-colors mt-2 disabled:opacity-70"
               style={{ background: '#0d4f6e' }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#0a3d56')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#0d4f6e')}
+              onMouseEnter={e => (!loading) && (e.currentTarget.style.background = '#0a3d56')}
+              onMouseLeave={e => (!loading) && (e.currentTarget.style.background = '#0d4f6e')}
             >
-              Kirjaudu
+              {loading ? 'Kirjaudutaan...' : 'Kirjaudu'}
             </button>
           </form>
 
