@@ -6,19 +6,24 @@ CREATE DATABASE IF NOT EXISTS raportointijarjestelma
 -- Otetaan juuri luotu tai olemassa oleva tietokanta käyttöön.
 USE raportointijarjestelma;
 
+-- Varmistetaan, että kaikki tekstikentät käyttävät UTF-8:n laajennettua muotoa.
+SET NAMES utf8mb4;
+
 -- Käyttäjätaulu loginia varten.
 CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(100) NOT NULL UNIQUE,
+  id INT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
   password VARCHAR(255) NOT NULL,
   name VARCHAR(120) NOT NULL,
   role ENUM('operaattori', 'esimies') NOT NULL DEFAULT 'operaattori',
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_users_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Yksi yhteinen taulu kaikille osastoille. Kentistä osa jää tyhjäksi osastosta riippuen.
 CREATE TABLE IF NOT EXISTS production_records (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  id INT NOT NULL AUTO_INCREMENT,
   department ENUM('keitto', 'pakkaamo', 'separointi') NOT NULL,
   record_date DATE NOT NULL,
   record_time TIME NOT NULL,
@@ -34,12 +39,13 @@ CREATE TABLE IF NOT EXISTS production_records (
   operator_name VARCHAR(120) NOT NULL,
   notes VARCHAR(255) DEFAULT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_department_date (department, record_date, record_time),
-  INDEX idx_operator (operator_name),
-  INDEX idx_product (product),
-  INDEX idx_line (line_name),
-  INDEX idx_equipment (equipment_name)
-);
+  PRIMARY KEY (id),
+  KEY idx_department_date (department, record_date, record_time),
+  KEY idx_operator (operator_name),
+  KEY idx_product (product),
+  KEY idx_line (line_name),
+  KEY idx_equipment (equipment_name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Demo-käyttäjät vastaavat frontendin nykyisiä testitunnuksia.
 INSERT INTO users (username, password, name, role)
