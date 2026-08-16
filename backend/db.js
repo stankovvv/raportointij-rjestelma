@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
-// Lataa .env-arvot ennen kuin luodaan tietokantayhteys.
+// Ladataan ympäristömuuttujat .env-tiedostosta.
 dotenv.config();
 
-// Käytetään poolia, jotta useat pyynnöt voivat käyttää samaa MySQL-yhteysjoukkoa.
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

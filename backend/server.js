@@ -184,11 +184,11 @@ function toApiRecord(row) {
         huomiot: row.notes || '',
     };
 }
-
+//toimiiko palvelin
 app.get('/health', (req, res) => {
     res.json({ ok: true, message: 'Palvelin toimii' });
 });
-
+//toimiiko APIt
 app.get('/api/health', (req, res) => {
     res.json({ ok: true, message: 'Backend OK' });
 });
@@ -408,7 +408,7 @@ pool.getConnection()
     .then((connection) => {
         connection.release();
         app.listen(port, () => {
-            console.log(`Server is running on localhost:${port}`);
+            console.log(`Server is running on http://localhost:${port}`);
         });
     })
     .catch((error) => {

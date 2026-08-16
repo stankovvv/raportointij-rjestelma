@@ -9,7 +9,7 @@ USE raportointijarjestelma;
 -- Varmistetaan, että kaikki tekstikentät käyttävät UTF-8:n laajennettua muotoa.
 SET NAMES utf8mb4;
 
--- Käyttäjätaulu loginia varten.
+-- Käyttäjätaulu loginia varten. 
 CREATE TABLE IF NOT EXISTS users (
   id INT NOT NULL AUTO_INCREMENT,
   username VARCHAR(100) NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS production_records (
   KEY idx_equipment (equipment_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Demo-käyttäjät vastaavat frontendin nykyisiä testitunnuksia.
+-- Demo-käyttäjät vastaavat Figman testitunnuksia.
 INSERT INTO users (username, password, name, role)
 VALUES
   ('matti.virtanen', 'meijeri1', 'Matti Virtanen', 'operaattori'),
